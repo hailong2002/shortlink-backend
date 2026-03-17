@@ -11,7 +11,7 @@ services:
       - db_data:/var/lib/postgresql/data
 
   app:
-    build: .
+    image: ${DOCKER_HUB_USERNAME}/shortlink-be:latest
     container_name: shortlink-app-be
     restart: on-failure
     depends_on:
