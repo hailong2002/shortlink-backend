@@ -12,7 +12,7 @@ import static com.example.shortlink.shortlink.api.ShoretLinkPath.GET_SHORT_LINK;
 import static com.example.shortlink.shortlink.api.ShoretLinkPath.SHORT_LINK_API;
 
 @RestController
-@RequestMapping(SHORT_LINK_API)
+@RequestMapping()
 public class ShortLinkController {
 
     private final ShortLinkService shortLinkService;
@@ -21,7 +21,7 @@ public class ShortLinkController {
         this.shortLinkService = shortLinkService;
     }
 
-    @GetMapping(GET_SHORT_LINK)
+    @GetMapping(SHORT_LINK_API + GET_SHORT_LINK)
     public ResponseEntity<String> getShortLink(@RequestParam String originalUrl) {
         String code = shortLinkService.getShortLink(originalUrl);
         return ResponseEntity.ok(SHORT_LINK_URL + code);

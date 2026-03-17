@@ -1,0 +1,62 @@
+name: CI/CD ShortLink app
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with maven
+        run: maven clean package -DskipTests
+
+      - name: Login to docker hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: 'true'
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/shortlink-be:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+           host: ${{ secrets.SERVER_HOST }}
+           port: ${{ secrets.SERVER_PORT }}
+           username: ${{ secrets.SERVER_USERNAME }}
+           password: ${{ secrets.SERVER_PASSWORD }}
+           script:
+             mkdir -p /home/${{ secrets.SERVER_USERNAME }}/shortlink-app-be
+             cd /home/${{ secrets.SERVER_USERNAME }}/shortlink-app-be
+             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/shortlink-be:latest
+             docker-compose up -d
+             docker image prune -f
+
+
+
+
+
+
+
+
+
+
