@@ -1,7 +1,7 @@
 # Stage 1: Build mã nguồn bằng Maven
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-# Copy file pom.xml và download dependencies trước để tận dụng cache 
+# Copy file pom.xml và download dependencies trước để tận dụng cache
 COPY pom.xml .
 RUN mvn dependency:go-offline
 

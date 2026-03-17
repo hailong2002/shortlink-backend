@@ -44,7 +44,7 @@ jobs:
            port: ${{ secrets.SERVER_PORT }}
            username: ${{ secrets.SERVER_USERNAME }}
            password: ${{ secrets.SERVER_PASSWORD }}
-           script:
+           script: |
              mkdir -p /home/${{ secrets.SERVER_USERNAME }}/shortlink-app-be
              cd /home/${{ secrets.SERVER_USERNAME }}/shortlink-app-be
              docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/shortlink-be:latest
