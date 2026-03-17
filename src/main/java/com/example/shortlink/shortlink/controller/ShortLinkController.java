@@ -27,8 +27,8 @@ public class ShortLinkController {
         return ResponseEntity.ok(SHORT_LINK_URL + code);
     }
 
-    @GetMapping("/short")
-    public ResponseEntity<Void> redirectToOriginalUrl(@RequestParam String code) {
+    @GetMapping("/{code}")
+    public ResponseEntity<Void> redirectToOriginalUrl(@PathVariable String code) {
         String originalUrl = shortLinkService.getOriginalUrl(code);
         return ResponseEntity.status(302).location(URI.create(originalUrl)).build();
     }
