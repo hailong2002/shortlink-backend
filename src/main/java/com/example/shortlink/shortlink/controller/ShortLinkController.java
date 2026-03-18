@@ -1,6 +1,7 @@
 package com.example.shortlink.shortlink.controller;
 
 import com.example.shortlink.shortlink.domain.ShortLinkService;
+import com.example.shortlink.shortlink.domain.dto.ShortLinkRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,9 @@ public class ShortLinkController {
         this.shortLinkService = shortLinkService;
     }
 
-    @GetMapping(SHORT_LINK_API + GET_SHORT_LINK)
-    public ResponseEntity<String> getShortLink(@RequestParam String originalUrl) {
-        String code = shortLinkService.getShortLink(originalUrl);
+    @PostMapping(SHORT_LINK_API + GET_SHORT_LINK)
+    public ResponseEntity<String> getShortLink(@RequestBody ShortLinkRequest request) {
+        String code = shortLinkService.getShortLink(request.getOriginalUrl());
         return ResponseEntity.ok(SHORT_LINK_URL + code);
     }
 
