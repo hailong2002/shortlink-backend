@@ -4,6 +4,7 @@ package com.example.shortlink.shortlink.domain;
 import com.example.shortlink.entites.ShortlinkEntity;
 import com.example.shortlink.shortlink.data.repository.ShortlinkEntityRepository;
 
+import com.example.shortlink.shortlink.domain.dto.ShortLinkResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static com.example.shortlink.shared.Constant.SHORT_LINK_URL;
+
 @Service
 @RequiredArgsConstructor
 public class ShortLinkServiceImpl implements ShortLinkService {
@@ -20,19 +23,24 @@ public class ShortLinkServiceImpl implements ShortLinkService {
     private final ShortlinkEntityRepository shortlinkEntityRepository;
 
     @Override
-    public String getShortLink(String originalUrl) {
+    public ShortLinkResponse getShortLink(String originalUrl) {
         Optional<ShortlinkEntity> optionalShortlinkEntity = shortlinkEntityRepository.findByOriginalUrl(originalUrl);
-        if (optionalShortlinkEntity.isPresent()) return optionalShortlinkEntity.get().getCode();
-        ShortlinkEntity shortlinkEntity = new ShortlinkEntity();
-//        String encodeUrl = URLEncoder.encode(originalUrl, StandardCharsets.UTF_8);
-        shortlinkEntity.setOriginalUrl(originalUrl);
-        String code = getRandomString();
-        while (isCodeExist(code)) {
-            code = getRandomString();
+        String code;
+        if (optionalShortlinkEntity.isPresent()) {
+            code = optionalShortlinkEntity.get().getCode();
+        } else {
+            ShortlinkEntity shortlinkEntity = new ShortlinkEntity();
+            shortlinkEntity.setOriginalUrl(originalUrl);
+            do {
+                code = getRandomString();
+            } while (isCodeExist(code));
+            shortlinkEntity.setCode(code);
+            shortlinkEntityRepository.save(shortlinkEntity);
         }
-        shortlinkEntity.setCode(code);
-        shortlinkEntityRepository.save(shortlinkEntity);
-        return code;
+        return ShortLinkResponse.builder()
+                .isSuccess(true)
+                .data(SHORT_LINK_URL + code)
+                .build();
     }
 
     @Override
