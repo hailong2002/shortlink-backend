@@ -33,7 +33,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").permitAll() // API công khai
-                        .requestMatchers("/{code}").permitAll() // API công khai
+                        .requestMatchers("/s/{code}").permitAll() // API công khai
                         .anyRequest().authenticated() // Các API khác phải login
                 );
 
