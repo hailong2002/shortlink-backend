@@ -3,11 +3,18 @@ services:
     image: ${DOCKER_HUB_USERNAME}/shortlink-be:latest
     container_name: shortlink-app-be
     restart: on-failure
+    networks:
+      - nginx-network
 #    depends_on:
 #      - db
-    ports:
-      - 80:10082
+#    ports:
+#      - 80:10082
 
 volumes:
   db_data:
+
+networks:
+  nginx-network:
+    name: nginx-network
+    external: true
 
