@@ -19,4 +19,4 @@ COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Lệnh để chạy ứng dụng
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-Xms4g","-Xmx4g","-XX:+UseG1GC","-Dserver.servlet.context-path=/svc","-Dserver.port=10082","-Dserver.tomcat.threads.max=200","-Dserver.tomcat.threads.min-spare=50","-Dserver.tomcat.accept-count=500","-Dserver.tomcat.connection-timeout=60000","-Dspring.datasource.hikari.maximum-pool-size=100","-Dspring.datasource.hikari.minimum-idle=20","-Dspring.datasource.hikari.connection-timeout=30000","--enable-preview","-jar","/app/app.jar"]
