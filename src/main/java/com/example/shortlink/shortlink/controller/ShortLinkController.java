@@ -3,10 +3,12 @@ package com.example.shortlink.shortlink.controller;
 import com.example.shortlink.shortlink.domain.ShortLinkService;
 import com.example.shortlink.shortlink.domain.dto.ShortLinkRequest;
 import com.example.shortlink.shortlink.domain.dto.ShortLinkResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.URI;
 
 import static com.example.shortlink.shared.Constant.SHORT_LINK_URL;
@@ -29,9 +31,10 @@ public class ShortLinkController {
     }
 
     @GetMapping("/s/{code}")
-    public ResponseEntity<Void> redirectToOriginalUrl(@PathVariable String code) {
+    public void redirectToOriginalUrl(HttpServletResponse response, @PathVariable String code) throws IOException {
         String originalUrl = shortLinkService.getOriginalUrl(code);
-        return ResponseEntity.status(302).location(URI.create(originalUrl)).build();
+//        return ResponseEntity.status(302).location(URI.create(originalUrl)).build();
+        response.sendRedirect(originalUrl);
     }
 
 }
