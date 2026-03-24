@@ -3,6 +3,8 @@ services:
     image: ${DOCKER_HUB_USERNAME}/shortlink-be:latest
     container_name: shortlink-app-be
     restart: on-failure
+    env_file:
+      - .env
     networks:
       - nginx-network
 #    depends_on:
