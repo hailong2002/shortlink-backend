@@ -33,6 +33,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             accessTokenCookie.setSecure(true);
             accessTokenCookie.setPath("/");
             accessTokenCookie.setMaxAge(15 * 60);
+            accessTokenCookie.setDomain("shortlink.io.vn");
 
             response.addCookie(accessTokenCookie);
             response.sendRedirect(redirectUrl);
