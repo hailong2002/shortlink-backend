@@ -50,4 +50,5 @@ server:
 logging:
   level:
     liquibase: DEBUG
+    org.springframework.security: DEBUG
 
