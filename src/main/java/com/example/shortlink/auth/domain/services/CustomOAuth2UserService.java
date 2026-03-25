@@ -27,10 +27,12 @@ public class CustomOAuth2UserService extends OidcUserService  {
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) {
+        log.info("Loading user from OIDC provider: {}", userRequest.getClientRegistration().getRegistrationId());
         OidcUser oidcUser = super.loadUser(userRequest);
         String googleId = oidcUser.getAttribute("sub");
         Optional<UserAuthProvider> existingAuthProvider = userAuthProviderRepository.findByProviderUserId(googleId);
         if (existingAuthProvider.isEmpty()) {
+            log.info("User not found in database, creating new user with Google ID: {}", googleId);
             String email = oidcUser.getAttribute("email");
             User user = User.builder()
                     .email(email)
@@ -46,6 +48,7 @@ public class CustomOAuth2UserService extends OidcUserService  {
                     .build();
             userAuthProviderRepository.save(userAuthProvider);
         }
+        log.info("User loaded successfully: {}", oidcUser.getEmail());
         return oidcUser;
     }
 }
