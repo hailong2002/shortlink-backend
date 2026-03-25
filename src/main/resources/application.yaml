@@ -6,9 +6,9 @@ spring:
       - secret
 
   datasource:
-    url: jdbc:postgresql://103.56.163.31:5432/postgres
-    username: postgres
-    password: 123@qwe
+    url: ${mydb.url}
+    username: ${mydb.username}
+    password: ${mydb.password}
     hikari:
       maximum-pool-size: 10
       connection-timeout: 30000
