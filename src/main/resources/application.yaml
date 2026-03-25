@@ -47,6 +47,11 @@ app:
 server:
   port: 10082
   forward-headers-strategy: native
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: true
 
 logging:
   level:
