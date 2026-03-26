@@ -91,7 +91,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setMaxAge(COOKIE_EXPIRE_SECONDS);
-        cookie.setDomain(".shortlink.io.vn");
+        cookie.setDomain("shortlink.io.vn");
         response.addCookie(cookie);
     }
 
