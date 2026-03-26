@@ -12,10 +12,10 @@ import javax.crypto.SecretKey;
 
 @Service
 public class JwtService {
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:KhoangBiMatDefaultChoMayCuaBanDeRunDuocTest123456789}")
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.expiration:259200000}")
     private long expirationTime;
 
     public String generateToken(String username) {
