@@ -34,12 +34,21 @@ public class CustomOAuth2UserService extends OidcUserService  {
         if (existingAuthProvider.isEmpty()) {
             log.info("User not found in database, creating new user with Google ID: {}", googleId);
             String email = oidcUser.getAttribute("email");
-            User user = User.builder()
-                    .email(email)
-                    .name(email != null ? email.split("@")[0] : "no name")
-                    .createdAt(Instant.now())
-                    .build();
-            userRepository.save(user);
+            
+            Optional<User> existingUser = userRepository.findByEmail(email);
+            User user;
+            if (existingUser.isPresent()) {
+                user = existingUser.get();
+                log.info("User with email {} already exists, merging with Google Provider", email);
+            } else {
+                user = User.builder()
+                        .email(email)
+                        .name(email != null ? email.split("@")[0] : "no name")
+                        .createdAt(Instant.now())
+                        .build();
+                userRepository.save(user);
+            }
+            
             var userAuthProvider = UserAuthProvider.builder()
                     .providerUserId(googleId)
                     .user(user)
