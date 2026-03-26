@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**", "/oauth2/**").permitAll()
+                        .requestMatchers("/login/**", "/oauth2/**", "/error").permitAll()
                         .requestMatchers("/s/{code}").permitAll() // API công khai
                         .anyRequest().authenticated() // Các API khác phải login
                 )
@@ -76,6 +76,13 @@ public class SecurityConfig {
                        .authorizationEndpoint(endpoint -> endpoint.authorizationRequestRepository(cookieRepo()))
                         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOAuth2UserService))
                         .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            System.err.println("--- OAuth2 Login Failed! --- ");
+                            exception.printStackTrace();
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"" + exception.getMessage() + "\"}");
+                        })
                 );
 
         return http.build();
