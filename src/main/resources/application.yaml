@@ -19,7 +19,7 @@ spring:
     enabled: true
 
   jwt:
-    secret: ${shortlink.jwt.secret}
+    secret: ${shortlink.jwt.secret:KhoangBiMatDefaultChoMayCuaBanDeRunDuocTest123456789}
     expiration: 259200000
 
   jpa:
@@ -37,7 +37,6 @@ spring:
             client-secret: ${shortlink.google.client-secret}
 
 
-# application.yml
 app:
   cors:
     allowed-origins:
@@ -56,5 +55,4 @@ server:
 logging:
   level:
     liquibase: DEBUG
-    org.springframework.security: TRACE
 
