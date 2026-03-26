@@ -13,13 +13,16 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static com.example.shortlink.auth.domain.services.JwtService.generateToken;
+
 
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
+    
+    private final JwtService jwtService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -29,7 +32,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         if (oauthUser != null) {
             log.info("OAuth2 user email redirect ");
             String username = oauthUser.getAttribute("email");
-            String token = generateToken(username);
+            String token = jwtService.generateToken(username);
             String redirectUrl = "https://shortlink.io.vn";
 
             Cookie accessTokenCookie = new Cookie("access_token", token);

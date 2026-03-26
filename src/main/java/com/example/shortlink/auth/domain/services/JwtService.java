@@ -14,12 +14,12 @@ import java.security.Key;
 @Service
 public class JwtService {
     @Value("${jwt.secret}")
-    private static String secret;
+    private String secret;
 
     @Value("${jwt.expiration}")
-    private static long expirationTime;
+    private long expirationTime;
 
-    public static String generateToken(String username) {
+    public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new java.util.Date(System.currentTimeMillis()))
