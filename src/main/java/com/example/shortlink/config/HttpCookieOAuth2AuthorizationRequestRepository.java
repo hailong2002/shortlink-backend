@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.util.SerializationUtils;
 import org.springframework.web.util.WebUtils;
 
 import java.util.Base64;
@@ -36,13 +35,9 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
         }
 
         String value = serialize(authorizationRequest);
-        Cookie cookie = new Cookie(OAUTH2_AUTH_REQUEST_COOKIE_NAME, value);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(COOKIE_EXPIRE_SECONDS);
-        cookie.setSecure(true); // nếu dùng https
-
-        response.addCookie(cookie);
+        String cookieString = String.format("%s=%s; Path=/; HttpOnly; Max-Age=%d; Secure; SameSite=None", 
+                                            OAUTH2_AUTH_REQUEST_COOKIE_NAME, value, COOKIE_EXPIRE_SECONDS);
+        response.addHeader("Set-Cookie", cookieString);
     }
 
     @Override
@@ -54,20 +49,24 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
     }
 
     private void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
-        Cookie cookie = new Cookie(name, null);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        String cookieString = String.format("%s=; Path=/; Max-Age=0", name);
+        response.addHeader("Set-Cookie", cookieString);
     }
 
     private String serialize(OAuth2AuthorizationRequest object) {
-        return Base64.getUrlEncoder()
-                .encodeToString(SerializationUtils.serialize(object));
+        return Base64.getUrlEncoder().encodeToString(
+                org.springframework.util.SerializationUtils.serialize(object));
     }
 
     private OAuth2AuthorizationRequest deserialize(String value) {
-        return (OAuth2AuthorizationRequest) SerializationUtils.deserialize(
-                Base64.getUrlDecoder().decode(value)
-        );
+        if (value == null || value.isBlank()) return null;
+        try {
+            return (OAuth2AuthorizationRequest) org.springframework.util.SerializationUtils.deserialize(
+                    Base64.getUrlDecoder().decode(value)
+            );
+        } catch (Exception e) {
+            System.err.println("Deserialization Error: " + e.getMessage());
+            return null;
+        }
     }
 }
