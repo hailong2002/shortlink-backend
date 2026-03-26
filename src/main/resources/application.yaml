@@ -46,11 +46,16 @@ app:
 server:
   port: 10082
   forward-headers-strategy: framework
+#  servlet:
+#    session:
+#      cookie:
+#        same-site: lax
+#        secure: false
   servlet:
     session:
       cookie:
-        same-site: lax
-        secure: false
+        same-site: none
+        secure: true
 
 logging:
   level:
