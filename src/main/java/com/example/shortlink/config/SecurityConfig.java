@@ -83,8 +83,10 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOAuth2UserService))
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler((request, response, exception) -> {
-                               log.error("OAuth2 Login Failed", exception);
-                               response.sendRedirect("/login?error");
+                              log.error("OAuth2 Login Failed. Exception class: {}, Message: {}", 
+                              exception.getClass().getName(), 
+                              exception.getMessage());
+                              response.sendRedirect("/login?error");
                         })
                 );
 
