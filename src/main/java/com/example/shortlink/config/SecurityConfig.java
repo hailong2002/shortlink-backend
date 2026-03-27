@@ -9,6 +9,8 @@ import com.example.shortlink.common.ErrorResponse;
 import com.example.shortlink.shared.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,6 +35,7 @@ import static com.example.shortlink.shared.ErrorCode.UNAUTHORIZED;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
     private final CorsProperties corsProperties;
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -78,11 +81,8 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOAuth2UserService))
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler((request, response, exception) -> {
-                            System.err.println("--- OAuth2 Login Failed! --- ");
-                            exception.printStackTrace();
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"error\": \"" + exception.getMessage() + "\"}");
+                               log.error("OAuth2 Login Failed", exception);
+                               response.sendRedirect("/login?error");
                         })
                 );
 
