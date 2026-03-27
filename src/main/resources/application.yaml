@@ -55,7 +55,7 @@ server:
     session:
       cookie:
         same-site: none
-        secure: true
+        secure: false
         domain: shortlink.io.vn
 
 logging:
