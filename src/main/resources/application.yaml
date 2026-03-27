@@ -45,7 +45,7 @@ app:
 
 server:
   port: 10082
-  forward-headers-strategy: native
+  forward-headers-strategy: framework
 #  servlet:
 #    session:
 #      cookie:
