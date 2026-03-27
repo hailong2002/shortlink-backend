@@ -57,6 +57,7 @@ server:
         same-site: none
         secure: true
         domain: shortlink.io.vn
+  max-http-request-header-size: 40KB # Tăng từ 8KB lên 40KB
 
 logging:
   level:
