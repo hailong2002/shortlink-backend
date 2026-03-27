@@ -74,7 +74,7 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(endpoint -> endpoint.authorizationRequestRepository(cookieRepo()))
+                        // .authorizationEndpoint(endpoint -> endpoint.authorizationRequestRepository(cookieRepo()))
                         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOAuth2UserService))
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler((request, response, exception) -> {
