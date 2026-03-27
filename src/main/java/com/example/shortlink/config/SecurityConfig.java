@@ -56,7 +56,9 @@ public class SecurityConfig {
 
                 // 2. Tắt CSRF nếu ông dùng Token (JWT). Nếu dùng Session thì cân nhắc để lại.
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                                                     .sessionFixation().migrateSession()
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login/**", "/oauth2/**", "/error").permitAll()
                         .requestMatchers("/s/{code}").permitAll() // API công khai
