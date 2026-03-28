@@ -60,10 +60,8 @@ public class SecurityConfig {
                                                      .sessionFixation().migrateSession()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**", "/oauth2/**", "/error").permitAll()
-                        .requestMatchers("/s/{code}").permitAll() // API công khai
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated() // Các API khác phải login
+                        .requestMatchers("/login/**", "/oauth2/**", "/error", "/s/{code}, /api/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
                     .authenticationEntryPoint((req, res, e) -> {

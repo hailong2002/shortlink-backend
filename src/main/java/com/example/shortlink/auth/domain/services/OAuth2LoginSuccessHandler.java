@@ -35,7 +35,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             String token = jwtService.generateToken(username);
             String redirectUrl = "https://shortlink.io.vn";
 
-            Cookie accessTokenCookie = new Cookie("access_token", token);
+            Cookie accessTokenCookie = new Cookie("token", token);
             accessTokenCookie.setHttpOnly(true);
             accessTokenCookie.setSecure(true);
             accessTokenCookie.setPath("/");
