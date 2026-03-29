@@ -1,12 +1,14 @@
 package com.example.shortlink.entites;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "shortlink")
 public class ShortlinkEntity {
     @Id
@@ -19,5 +21,12 @@ public class ShortlinkEntity {
 
     @Column(name = "code", length = 10)
     private String code;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(name = "click_count")
+    private Integer clickCount;
 
 }

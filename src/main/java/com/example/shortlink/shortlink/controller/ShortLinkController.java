@@ -1,17 +1,17 @@
 package com.example.shortlink.shortlink.controller;
 
-import com.example.shortlink.shortlink.domain.ShortLinkService;
+import com.example.shortlink.infrastructure.exception.UnauthorizedException;
+import com.example.shortlink.shortlink.domain.service.interfaces.ShortLinkService;
 import com.example.shortlink.shortlink.domain.dto.ShortLinkRequest;
 import com.example.shortlink.shortlink.domain.dto.ShortLinkResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
-import java.net.URI;
+import java.security.Principal;
 
-import static com.example.shortlink.shared.Constant.SHORT_LINK_URL;
 import static com.example.shortlink.shortlink.api.ShoretLinkPath.GET_SHORT_LINK;
 import static com.example.shortlink.shortlink.api.ShoretLinkPath.SHORT_LINK_API;
 
@@ -26,8 +26,12 @@ public class ShortLinkController {
     }
 
     @PostMapping(SHORT_LINK_API + GET_SHORT_LINK)
-    public ResponseEntity<ShortLinkResponse> getShortLink(@RequestBody ShortLinkRequest request) {
-        return ResponseEntity.ok(shortLinkService.getShortLink(request.getOriginalUrl()));
+    public ResponseEntity<ShortLinkResponse> getShortLink(@RequestBody ShortLinkRequest request, Principal principal) {
+        String username = principal != null ? principal.getName() : null;
+        if (username == null) {
+            throw new UnauthorizedException("User have not login yet");
+        }
+        return ResponseEntity.ok(shortLinkService.getShortLink(request.getOriginalUrl(), username));
     }
 
     @GetMapping("/s/{code}")
