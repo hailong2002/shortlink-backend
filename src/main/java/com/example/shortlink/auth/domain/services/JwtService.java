@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +13,10 @@ import javax.crypto.SecretKey;
 
 @Service
 public class JwtService {
-    @Value("${jwt.secret:default}")
+    @Value("${shortlink.jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration:259200000}")
+    @Value("${jwt.expiration}")
     private long expirationTime;
 
     public String generateToken(String username) {

@@ -18,9 +18,7 @@ spring:
     change-log: classpath:db/changelog/changelog-master.yaml
     enabled: true
 
-  jwt:
-    secret: ${shortlink.jwt.secret:default}
-    expiration: 259200000
+
 
   jpa:
     hibernate:
@@ -60,3 +58,7 @@ server:
         domain: shortlink.io.vn
   max-http-request-header-size: 40KB
 
+
+jwt:
+    secret: ${shortlink.jwt.secret}
+    expiration: 259200000
