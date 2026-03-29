@@ -48,6 +48,7 @@ jobs:
              mkdir -p /home/${{ secrets.SERVER_USERNAME }}/shortlink-app-be
              cd /home/${{ secrets.SERVER_USERNAME }}/shortlink-app-be
              docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/shortlink-be:latest
+             docker compose down
              docker compose up -d
              docker image prune -f
 
