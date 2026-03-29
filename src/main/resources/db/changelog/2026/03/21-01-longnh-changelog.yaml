@@ -4,6 +4,29 @@ databaseChangeLog:
       author: longnh
       changes:
         - createTable:
+              tableName: shortlink
+              columns:
+                - column:
+                    name: id
+                    type: BIGSERIAL
+                    constraints:
+                      primaryKey: true
+                - column:
+                    name: original_url
+                    type: text
+                    constraints:
+                      nullable: false
+                - column:
+                    name: code
+                    type: varchar(10)
+                - column:
+                    name: user_id
+                    type: bigint
+                - column:
+                    name: click_count
+                    type: int
+
+        - createTable:
             tableName: users
             columns:
               - column:
