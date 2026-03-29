@@ -12,7 +12,7 @@ import javax.crypto.SecretKey;
 
 @Service
 public class JwtService {
-    @Value("${jwt.secret:KhoangBiMatDefaultChoMayCuaBanDeRunDuocTest123456789}")
+    @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expiration:259200000}")
@@ -23,7 +23,7 @@ public class JwtService {
                 .subject(username)
                 .issuedAt(new java.util.Date(System.currentTimeMillis()))
                 .expiration(new java.util.Date(System.currentTimeMillis() + expirationTime))
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()), Jwts.SIG.HS256)
+                .signWith(getSignKey())
                 .compact();
     }
 

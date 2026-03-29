@@ -19,7 +19,7 @@ spring:
     enabled: true
 
   jwt:
-    secret: ${shortlink.jwt.secret:KhoangBiMatDefaultChoMayCuaBanDeRunDuocTest123456789}
+    secret: ${shortlink.jwt.secret}
     expiration: 259200000
 
   jpa:
