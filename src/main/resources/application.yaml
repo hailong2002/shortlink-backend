@@ -19,7 +19,7 @@ spring:
     enabled: true
 
   jwt:
-    secret: ${shortlink.jwt.secret}
+    secret: ${shortlink.jwt.secret:default}
     expiration: 259200000
 
   jpa:
