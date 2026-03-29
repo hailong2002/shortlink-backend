@@ -11,8 +11,6 @@ import java.util.TimeZone;
 
 @SpringBootApplication
 public class ShortlinkApplication {
-	@Value("${jwt.secret:default}")
-	private static String secret;
 
 	public static void main(String[] args) {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
@@ -20,8 +18,7 @@ public class ShortlinkApplication {
 		// Ép Java chỉ sử dụng IPv4 khi gọi API của Google (oauth2.googleapis.com).
 		// Rất nhiều VPS Ubuntu/Docker bị lỗi định tuyến IPv6, khiến lệnh gọi API backend bị treo vĩnh viễn
 		// (không báo lỗi, không crash, chỉ im lìm đến khi Cloudflare văng 502/504 timeout).
-		System.out.println("key ne: " + secret);
-		System.setProperty("java.net.preferIPv4Stack", "true");
+//		System.setProperty("java.net.preferIPv4Stack", "true");
 		SpringApplication.run(ShortlinkApplication.class, args);
 	}
 
