@@ -60,7 +60,3 @@ server:
         domain: shortlink.io.vn
   max-http-request-header-size: 40KB
 
-logging:
-  level:
-    liquibase: DEBUG
-
