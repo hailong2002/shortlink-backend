@@ -13,7 +13,7 @@
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 # Copy file jar từ stage build sang (đảm bảo tên file .jar đúng với pom.xml)
-COPY --from=build /app/target/*.jar app.jar
+COPY /app/target/*.jar app.jar
 
 # Khai báo port ứng dụng (thường là 8080)
 EXPOSE 8080
