@@ -28,7 +28,7 @@ public class UserController {
     public ResponseEntity<UserInfoResponse> getCurrentUserInfo(Principal principal) {
         if (principal == null || principal.getName() == null) {
             log.error("Unauthorized access attempt to get current user info");
-            throw new UnauthorizedException("User have not login yet");
+            throw new UnauthorizedException("User have not signed in yet");
         }
         return ResponseEntity.ok(userService.getCurrentUserInfo(principal.getName()));
     }

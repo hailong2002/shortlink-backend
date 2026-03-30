@@ -13,7 +13,7 @@ import javax.crypto.SecretKey;
 
 @Service
 public class JwtService {
-    @Value("${shortlink.jwt.secret}")
+    @Value("${shortlink.jwt.secret:default}")
     private String secret;
 
     @Value("${jwt.expiration}")
