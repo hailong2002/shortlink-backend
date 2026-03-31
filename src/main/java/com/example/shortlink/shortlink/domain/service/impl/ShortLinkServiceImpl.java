@@ -22,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -57,6 +58,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
                     .code(code)
                     .clickCount(0)
                     .user(optionalUser.get())
+                    .createdAt(Instant.now())
                     .build();
             shortlinkEntityRepository.save(shortlinkEntity);
         }

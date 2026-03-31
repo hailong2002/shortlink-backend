@@ -14,6 +14,6 @@ import java.time.Instant;
 public class ShortLinkHistoryResponse {
     private String originalUrl;
     private String shortenedUrl;
-    private Instant createdDate;
+    private Instant createdAt;
     private int clickCount;
 }

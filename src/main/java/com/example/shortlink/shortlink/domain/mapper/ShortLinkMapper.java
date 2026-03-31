@@ -3,8 +3,11 @@ package com.example.shortlink.shortlink.domain.mapper;
 import com.example.shortlink.entites.ShortlinkEntity;
 import com.example.shortlink.shortlink.domain.dto.ShortLinkHistoryResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+
+import static com.example.shortlink.shared.Constant.SHORT_LINK_URL;
 
 @Mapper(
         componentModel = "spring",
@@ -12,5 +15,10 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface ShortLinkMapper {
+    @Mapping(target = "shortenedUrl", expression = "java(getShortenedLink(entity))")
     ShortLinkHistoryResponse toHistoryResponse(ShortlinkEntity entity);
+
+    default String getShortenedLink(ShortlinkEntity entity) {
+        return SHORT_LINK_URL + entity.getCode();
+    }
 }
