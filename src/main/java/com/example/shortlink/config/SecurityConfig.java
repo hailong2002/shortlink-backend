@@ -6,6 +6,7 @@ import com.example.shortlink.auth.domain.services.JwtAuthFilter;
 import com.example.shortlink.auth.domain.services.JwtService;
 import com.example.shortlink.auth.domain.services.OAuth2LoginSuccessHandler;
 import com.example.shortlink.common.ErrorResponse;
+import com.example.shortlink.infrastructure.exception.AppException;
 import com.example.shortlink.shared.ErrorCode;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +61,7 @@ public class SecurityConfig {
                                                      .sessionFixation().migrateSession()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login/**", "/oauth2/**", "/error", "/s/{code}","/api/**").permitAll()
+                        .requestMatchers("/login/**", "/oauth2/**", "/error", "/s/{code}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
