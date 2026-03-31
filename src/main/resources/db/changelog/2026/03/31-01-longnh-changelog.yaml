@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+        id: 1774107121
+        author: longnh
+        changes:
+            - addColumn:
+                tableName: shortlink
+                columns:
+                    - column:
+                        name: created_at
+                        type: TIMESTAMP
+                        defaultValueComputed: CURRENT_TIMESTAMP

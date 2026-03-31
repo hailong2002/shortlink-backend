@@ -3,6 +3,8 @@ package com.example.shortlink.entites;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @Entity
@@ -28,5 +30,8 @@ public class ShortlinkEntity {
 
     @Column(name = "click_count")
     private Integer clickCount;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
 
 }
