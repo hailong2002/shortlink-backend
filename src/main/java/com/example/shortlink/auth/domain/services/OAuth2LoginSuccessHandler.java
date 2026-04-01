@@ -41,11 +41,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             accessTokenCookie.setPath("/");
             accessTokenCookie.setMaxAge(15 * 60);
 //            accessTokenCookie.setDomain("shortlink.io.vn");
-            response.addCookie(accessTokenCookie);
+//            response.addCookie(accessTokenCookie);
 
             // Thêm dòng này để ép trình duyệt nhận Cookie sau khi Redirect từ Google
             response.setHeader("Set-Cookie", "token=" + token + "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=900; Domain=shortlink.io.vn");
-            response.addCookie(accessTokenCookie);
+//            response.addCookie(accessTokenCookie);
             response.sendRedirect(redirectUrl);
         }
 
