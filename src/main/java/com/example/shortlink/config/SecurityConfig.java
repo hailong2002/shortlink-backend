@@ -78,9 +78,12 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                     .logoutUrl("/api/logout")
-                    .logoutSuccessUrl("/")
+                    .logoutSuccessHandler((request, response, authentication) -> {
+                        // Chỉ trả về 200 OK, không ép Redirect từ backend
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    })
                     .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID")
+                    .deleteCookies("JSESSIONID", "token")
         );
         ;
 
