@@ -35,17 +35,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             String token = jwtService.generateToken(username);
             String redirectUrl = "https://shortlink.io.vn";
 
-            Cookie accessTokenCookie = new Cookie("token", token);
-            accessTokenCookie.setHttpOnly(true);
-            accessTokenCookie.setSecure(true);
-            accessTokenCookie.setPath("/");
-            accessTokenCookie.setMaxAge(15 * 60);
-//            accessTokenCookie.setDomain("shortlink.io.vn");
-//            response.addCookie(accessTokenCookie);
-
-            // Thêm dòng này để ép trình duyệt nhận Cookie sau khi Redirect từ Google
-            response.setHeader("Set-Cookie", "token=" + token + "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=900; Domain=shortlink.io.vn");
-//            response.addCookie(accessTokenCookie);
+            response.setHeader("Set-Cookie", "token=" + token + "; Path=/api/; HttpOnly; Secure; SameSite=None; Max-Age=900; Domain=shortlink.io.vn");
             response.sendRedirect(redirectUrl);
         }
 

@@ -1,9 +1,7 @@
 package com.example.shortlink.config;
 
 
-import com.example.shortlink.auth.domain.services.CustomOAuth2UserService;
-import com.example.shortlink.auth.domain.services.JwtAuthFilter;
-import com.example.shortlink.auth.domain.services.OAuth2LoginSuccessHandler;
+import com.example.shortlink.auth.domain.services.*;
 import com.example.shortlink.common.ErrorResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,12 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
-import java.util.List;
 
-import static com.example.shortlink.shared.ErrorCode.UNAUTHORIZED;
 
 @Configuration
 @EnableWebSecurity
@@ -35,8 +32,10 @@ public class SecurityConfig {
     private final CorsProperties corsProperties;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    private final OAuth2LogoutSuccessHandler oAuth2LogoutSuccessHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final JwtAuthFilter jwtAuthFilter;
-    private final ObjectMapper objectMapper;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -54,36 +53,18 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
-                    .authenticationEntryPoint((req, res, e) -> {
-                        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        res.setContentType("application/json");
-                        ErrorResponse error = ErrorResponse.builder()
-                                .code(UNAUTHORIZED.toString())
-                                .message(UNAUTHORIZED.getMessage())
-                                .build();
-
-                        res.getWriter().write(objectMapper.writeValueAsString(error));
-                    })
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOAuth2UserService))
                         .successHandler(oAuth2LoginSuccessHandler)
-                        .failureHandler((request, response, exception) -> {
-                              log.error("OAuth2 Login Failed. Exception class: {}, Message: {}", 
-                              exception.getClass().getName(), 
-                              exception.getMessage());
-                              response.sendRedirect("/login?error");
-                        })
+                        .failureHandler(oAuth2LoginFailureHandler)
                 )
                 .logout(logout -> logout
                     .logoutUrl("/api/logout")
-                    .logoutSuccessHandler((request, response, authentication) -> {
-                        // Chỉ trả về 200 OK, không ép Redirect từ backend
-                        response.setStatus(HttpServletResponse.SC_OK);
-                    })
+                    .logoutSuccessHandler(oAuth2LogoutSuccessHandler)
                     .invalidateHttpSession(true)
-                    .deleteCookies("JSESSIONID", "token")
         );
         ;
 
