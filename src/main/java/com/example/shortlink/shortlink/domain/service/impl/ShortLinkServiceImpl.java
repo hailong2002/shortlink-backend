@@ -22,13 +22,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.example.shortlink.shared.Constant.SHORT_LINK_URL;
-import static com.example.shortlink.shared.ErrorCode.SHORTENED_CODE_NOT_FOUND;
-import static com.example.shortlink.shared.ErrorCode.UNAUTHORIZED;
+import static com.example.shortlink.shared.ErrorCode.*;
+import static com.example.shortlink.shared.utils.UrlUtils.isValidUrl;
 import static com.example.shortlink.shared.utils.UserUtils.extractEmailFromCookie;
 
 @Service
@@ -41,6 +42,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
     @Override
     public ShortLinkResponse getShortLink(String originalUrl) {
+        isValidUrl(originalUrl);
         Optional<ShortlinkEntity> optionalShortlinkEntity = shortlinkEntityRepository.findByOriginalUrl(originalUrl);
         Optional<User> optionalUser = userRepository.findByEmail(extractEmailFromCookie());
         if (optionalUser.isEmpty()) {
