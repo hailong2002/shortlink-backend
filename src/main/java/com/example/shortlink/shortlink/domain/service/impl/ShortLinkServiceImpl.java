@@ -15,6 +15,8 @@ import com.example.shortlink.shortlink.domain.mapper.ShortLinkMapper;
 import com.example.shortlink.shortlink.domain.service.interfaces.ShortLinkService;
 import com.example.shortlink.user.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +41,7 @@ public class ShortLinkServiceImpl implements ShortLinkService {
     private final ShortlinkEntityRepository shortlinkEntityRepository;
     private final UserRepository userRepository;
     private final ShortLinkMapper shortLinkMapper;
+    private final RedissonClient redissonClient;
 
     @Override
     public ShortLinkResponse getShortLink(String originalUrl) {
@@ -63,7 +66,10 @@ public class ShortLinkServiceImpl implements ShortLinkService {
                     .createdAt(Instant.now())
                     .build();
             shortlinkEntityRepository.save(shortlinkEntity);
+            RMap<String, String> urlMap = redissonClient.getMap("shortlink.code");
+            urlMap.put(code, originalUrl);
         }
+
         return ShortLinkResponse.builder()
                 .isSuccess(true)
                 .data(SHORT_LINK_URL + code)
@@ -72,6 +78,10 @@ public class ShortLinkServiceImpl implements ShortLinkService {
 
     @Override
     public String getOriginalUrl(String code) {
+        RMap<String, String> urlMap = redissonClient.getMap("shortlink.code");
+        if (urlMap.containsKey(code)) {
+            return urlMap.get(code);
+        }
         Optional<ShortlinkEntity> optionalShortlinkEntity = shortlinkEntityRepository.findByCode(code);
         if (optionalShortlinkEntity.isPresent()) {
             return optionalShortlinkEntity.get().getOriginalUrl();
