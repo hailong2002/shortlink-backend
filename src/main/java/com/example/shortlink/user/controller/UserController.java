@@ -1,7 +1,7 @@
 package com.example.shortlink.user.controller;
 
 import com.example.shortlink.auth.domain.dto.UserInfoResponse;
-import com.example.shortlink.infrastructure.exception.UnauthorizedException;
+import com.example.shortlink.common.exception.UnauthorizedException;
 import com.example.shortlink.user.domain.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.naming.AuthenticationException;
 import java.security.Principal;
 
 import static com.example.shortlink.user.api.UserApiPath.USER_API;

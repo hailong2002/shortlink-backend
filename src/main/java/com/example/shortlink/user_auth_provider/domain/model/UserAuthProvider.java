@@ -1,8 +1,8 @@
-package com.example.shortlink.entites;
+package com.example.shortlink.user_auth_provider.domain.model;
 
+import com.example.shortlink.user.domain.model.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;

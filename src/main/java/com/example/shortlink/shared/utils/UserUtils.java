@@ -1,6 +1,6 @@
 package com.example.shortlink.shared.utils;
 
-import com.example.shortlink.infrastructure.exception.UnauthorizedException;
+import com.example.shortlink.common.exception.UnauthorizedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

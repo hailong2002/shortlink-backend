@@ -1,20 +1,16 @@
-package com.example.shortlink.shortlink.controller;
+package com.example.shortlink.shortlink.presentation.controller;
 
-import com.example.shortlink.infrastructure.exception.UnauthorizedException;
 import com.example.shortlink.shared.PageResponse;
-import com.example.shortlink.shortlink.domain.dto.ShortLinkHistoryResponse;
-import com.example.shortlink.shortlink.domain.service.interfaces.ShortLinkService;
-import com.example.shortlink.shortlink.domain.dto.ShortLinkRequest;
-import com.example.shortlink.shortlink.domain.dto.ShortLinkResponse;
+import com.example.shortlink.shortlink.application.service.ShortLinkService;
+import com.example.shortlink.shortlink.presentation.dto.ShortLinkHistoryResponse;
+import com.example.shortlink.shortlink.presentation.dto.ShortLinkRequest;
+import com.example.shortlink.shortlink.presentation.dto.ShortLinkResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
 import java.io.IOException;
-import java.security.Principal;
 
 import static com.example.shortlink.shortlink.api.ShoretLinkPath.GET_SHORT_LINK;
 import static com.example.shortlink.shortlink.api.ShoretLinkPath.SHORT_LINK_API;
@@ -37,7 +33,6 @@ public class ShortLinkController {
     @GetMapping("/s/{code}")
     public void redirectToOriginalUrl(HttpServletResponse response, @PathVariable String code) throws IOException {
         String originalUrl = shortLinkService.getOriginalUrl(code);
-//        return ResponseEntity.status(302).location(URI.create(originalUrl)).build();
         response.sendRedirect(originalUrl);
     }
 

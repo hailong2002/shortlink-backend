@@ -1,15 +1,12 @@
-package com.example.shortlink.config;
+package com.example.shortlink.infrastructure.config;
 
 
 import com.example.shortlink.auth.domain.services.*;
-import com.example.shortlink.common.ErrorResponse;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;

@@ -1,4 +1,4 @@
-package com.example.shortlink.shortlink.domain.dto;
+package com.example.shortlink.shortlink.presentation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,30 +1,25 @@
-package com.example.shortlink.shortlink.domain.service.impl;
+package com.example.shortlink.shortlink.application.service;
 
 
-import com.example.shortlink.entites.ShortlinkEntity;
-import com.example.shortlink.entites.User;
-import com.example.shortlink.infrastructure.exception.AppException;
-import com.example.shortlink.infrastructure.exception.UnauthorizedException;
+import com.example.shortlink.shortlink.domain.entity.ShortlinkEntity;
+import com.example.shortlink.shortlink.presentation.dto.RequestToken;
+import com.example.shortlink.user.domain.model.User;
+import com.example.shortlink.common.exception.AppException;
 import com.example.shortlink.shared.PageResponse;
-import com.example.shortlink.shortlink.data.repository.ShortlinkEntityRepository;
+import com.example.shortlink.shortlink.domain.repository.ShortlinkEntityRepository;
 
-import com.example.shortlink.shortlink.domain.dto.ShortLinkHistoryResponse;
-import com.example.shortlink.shortlink.domain.dto.ShortLinkRequest;
-import com.example.shortlink.shortlink.domain.dto.ShortLinkResponse;
-import com.example.shortlink.shortlink.domain.mapper.ShortLinkMapper;
-import com.example.shortlink.shortlink.domain.service.interfaces.ShortLinkService;
+import com.example.shortlink.shortlink.presentation.dto.ShortLinkHistoryResponse;
+import com.example.shortlink.shortlink.presentation.dto.ShortLinkResponse;
+import com.example.shortlink.shortlink.presentation.mapper.ShortLinkMapper;
 import com.example.shortlink.user.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -36,22 +31,23 @@ import static com.example.shortlink.shared.utils.UserUtils.extractEmailFromCooki
 
 @Service
 @RequiredArgsConstructor
-public class ShortLinkServiceImpl implements ShortLinkService {
+public class ShortLinkService {
 
     private final ShortlinkEntityRepository shortlinkEntityRepository;
     private final UserRepository userRepository;
     private final ShortLinkMapper shortLinkMapper;
-    private final RedissonClient redissonClient;
+    private final ObjectProvider<RedissonClient> redissonClientProvider;
+    private final String TOKEN_BUCKET = "token.bucket";
 
-    @Override
     public ShortLinkResponse getShortLink(String originalUrl) {
         isValidUrl(originalUrl);
-        Optional<ShortlinkEntity> optionalShortlinkEntity = shortlinkEntityRepository.findByOriginalUrl(originalUrl);
         Optional<User> optionalUser = userRepository.findByEmail(extractEmailFromCookie());
         if (optionalUser.isEmpty()) {
             throw new AppException(UNAUTHORIZED);
         }
+        checkRateLimit(optionalUser.get().getId());
         String code;
+        Optional<ShortlinkEntity> optionalShortlinkEntity = shortlinkEntityRepository.findByOriginalUrl(originalUrl);
         if (optionalShortlinkEntity.isPresent()) {
             code = optionalShortlinkEntity.get().getCode();
         } else {
@@ -66,8 +62,11 @@ public class ShortLinkServiceImpl implements ShortLinkService {
                     .createdAt(Instant.now())
                     .build();
             shortlinkEntityRepository.save(shortlinkEntity);
-            RMap<String, String> urlMap = redissonClient.getMap("shortlink.code");
-            urlMap.put(code, originalUrl);
+            RedissonClient redissonClient = redissonClientProvider.getIfAvailable();
+            if (redissonClient != null) {
+                RMap<String, String> urlMap = redissonClient.getMap("shortlink.code");
+                urlMap.put(code, originalUrl);
+            }
         }
 
         return ShortLinkResponse.builder()
@@ -76,11 +75,44 @@ public class ShortLinkServiceImpl implements ShortLinkService {
                 .build();
     }
 
-    @Override
+    private void checkRateLimit(Long userId) {
+        RedissonClient redissonClient = redissonClientProvider.getIfAvailable();
+        if (redissonClient == null) {
+            return;
+        }
+        RMap<Long, RequestToken> bucketToken = redissonClient.getMap(TOKEN_BUCKET);
+        int maxTokens = 100;
+        int refillRate = 3;
+        Long currentTime = Instant.now().getEpochSecond();
+        bucketToken.compute(userId, (key, requestToken) -> {
+            if (requestToken == null) {
+                return RequestToken.builder()
+                        .lastTime(currentTime)
+                        .currentTokens(maxTokens - 1)
+                        .build();
+            }
+
+            int refillToken =  Math.toIntExact((currentTime - requestToken.getLastTime()) / refillRate);
+            int newTokens = requestToken.getCurrentTokens() + refillToken;
+            if (newTokens < 1) {
+                throw new AppException(OUT_OF_TOKEN_REQUEST);
+            }
+            Long lastTime = refillToken > 0 ? currentTime : requestToken.getLastTime();
+            return RequestToken.builder()
+                    .lastTime(lastTime)
+                    .currentTokens(Math.min(maxTokens,  newTokens - 1))
+                    .build();
+        });
+    }
+
+
     public String getOriginalUrl(String code) {
-        RMap<String, String> urlMap = redissonClient.getMap("shortlink.code");
-        if (urlMap.containsKey(code)) {
-            return urlMap.get(code);
+        RedissonClient redissonClient = redissonClientProvider.getIfAvailable();
+        if (redissonClient != null) {
+            RMap<String, String> urlMap = redissonClient.getMap("shortlink.code");
+            if (urlMap.containsKey(code)) {
+                return urlMap.get(code);
+            }
         }
         Optional<ShortlinkEntity> optionalShortlinkEntity = shortlinkEntityRepository.findByCode(code);
         if (optionalShortlinkEntity.isPresent()) {
@@ -89,7 +121,6 @@ public class ShortLinkServiceImpl implements ShortLinkService {
         throw new AppException(SHORTENED_CODE_NOT_FOUND);
     }
 
-    @Override
     public PageResponse<ShortLinkHistoryResponse> getHistory(Pageable pageable) {
         Long userId = getUserId();
         Page<ShortlinkEntity> entities = shortlinkEntityRepository.findAllByUserId(userId, pageable);

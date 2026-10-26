@@ -1,6 +1,6 @@
-package com.example.shortlink.shortlink.data.repository;
+package com.example.shortlink.shortlink.domain.repository;
 
-import com.example.shortlink.entites.ShortlinkEntity;
+import com.example.shortlink.shortlink.domain.entity.ShortlinkEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

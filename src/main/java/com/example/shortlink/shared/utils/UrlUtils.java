@@ -1,7 +1,6 @@
 package com.example.shortlink.shared.utils;
 
-import com.example.shortlink.infrastructure.exception.AppException;
-import com.example.shortlink.shared.ErrorCode;
+import com.example.shortlink.common.exception.AppException;
 
 import java.net.URI;
 

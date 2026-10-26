@@ -1,6 +1,6 @@
 package com.example.shortlink.user.data.repository;
 
-import com.example.shortlink.entites.User;
+import com.example.shortlink.user.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,4 +1,4 @@
-package com.example.shortlink.infrastructure.exception;
+package com.example.shortlink.common.exception;
 
 import com.example.shortlink.shared.ErrorCode;
 import lombok.Getter;

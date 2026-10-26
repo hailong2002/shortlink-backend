@@ -1,7 +1,7 @@
-package com.example.shortlink.shortlink.domain.mapper;
+package com.example.shortlink.shortlink.presentation.mapper;
 
-import com.example.shortlink.entites.ShortlinkEntity;
-import com.example.shortlink.shortlink.domain.dto.ShortLinkHistoryResponse;
+import com.example.shortlink.shortlink.domain.entity.ShortlinkEntity;
+import com.example.shortlink.shortlink.presentation.dto.ShortLinkHistoryResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;

@@ -1,7 +1,7 @@
 package com.example.shortlink.user.domain.mapper;
 
 import com.example.shortlink.auth.domain.dto.UserInfoResponse;
-import com.example.shortlink.entites.User;
+import com.example.shortlink.user.domain.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;

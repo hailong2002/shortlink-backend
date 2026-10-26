@@ -1,4 +1,4 @@
-package com.example.shortlink.config;
+package com.example.shortlink.infrastructure.config;
 
 import lombok.Getter;
 import lombok.Setter;

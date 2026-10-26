@@ -1,5 +1,6 @@
-package com.example.shortlink.entites;
+package com.example.shortlink.shortlink.domain.entity;
 
+import com.example.shortlink.user.domain.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,17 +1,14 @@
 package com.example.shortlink.auth.domain.services;
 
-import com.example.shortlink.entites.User;
-import com.example.shortlink.entites.UserAuthProvider;
+import com.example.shortlink.user.domain.model.User;
+import com.example.shortlink.user_auth_provider.domain.model.UserAuthProvider;
 import com.example.shortlink.user.data.repository.UserRepository;
 import com.example.shortlink.user_auth_provider.data.repository.UserAuthProviderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
