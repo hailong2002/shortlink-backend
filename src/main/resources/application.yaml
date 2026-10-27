@@ -1,6 +1,3 @@
-server:
-  port: ${PORT:10082}
-
 spring:
   application:
     name: shortlink
@@ -46,7 +43,7 @@ app:
       - "https://shortlink.io.vn"
 
 server:
-  port: 10082
+  port: ${PORT:10082}
   forward-headers-strategy: framework
 #  servlet:
 #    session:
