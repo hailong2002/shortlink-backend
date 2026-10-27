@@ -24,7 +24,6 @@ ENTRYPOINT ["java", \
     "-Xmx512m", \
     "-Djava.net.preferIPv4Stack=true", \
     "-XX:+UseG1GC", \
-    "-Dserver.port=10082", \
     "-Dserver.tomcat.threads.max=100", \
     "-Dserver.tomcat.threads.min-spare=10", \
     "-Dserver.tomcat.accept-count=100", \
