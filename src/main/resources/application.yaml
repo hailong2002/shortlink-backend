@@ -45,18 +45,17 @@ app:
 
 server:
   port: ${PORT:10082}
-  forward-headers-strategy: framework
-#  servlet:
-#    session:
-#      cookie:
-#        same-site: lax
-#        secure: false
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      remote-ip-header: x-forwarded-for
+      protocol-header: x-forwarded-proto
+      internal-proxies: ".*"
   servlet:
     session:
       cookie:
-        same-site: none
+        same-site: lax
         secure: true
-#        domain: shortlink.io.vn
   max-http-request-header-size: 40KB
 
 
