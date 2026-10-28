@@ -18,6 +18,7 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
         log.error("OAuth2 Login Failed. Exception class: {}, Message: {}",
                 exception.getClass().getName(),
                 exception.getMessage());
-        response.sendRedirect("/login?error");
+        String errorMessage = exception != null && exception.getMessage() != null ? exception.getMessage() : "authentication_failed";
+        response.sendRedirect("https://shortlink-frontend-eight.vercel.app/login?error=" + java.net.URLEncoder.encode(errorMessage, java.nio.charset.StandardCharsets.UTF_8));
     }
 }

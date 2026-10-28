@@ -23,8 +23,7 @@ public class OAuth2LogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, @Nullable Authentication authentication) throws IOException, ServletException {
         ResponseCookie cleanToken = ResponseCookie.from("token", "")
-                .path("/api/")
-                .domain("shortlink.io.vn")
+                .path("/")
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
@@ -35,6 +34,9 @@ public class OAuth2LogoutSuccessHandler implements LogoutSuccessHandler {
         ResponseCookie cleanSession = ResponseCookie.from("JSESSIONID", "")
                 .path("/")
                 .maxAge(0)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cleanSession.toString());
 

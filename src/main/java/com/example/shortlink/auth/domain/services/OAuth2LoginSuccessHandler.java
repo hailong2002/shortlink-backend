@@ -33,9 +33,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             log.info("OAuth2 user email redirect ");
             String username = oauthUser.getAttribute("email");
             String token = jwtService.generateToken(username);
-            String redirectUrl = "https://shortlink.io.vn";
+            String redirectUrl = "https://shortlink-frontend-eight.vercel.app";
 
-            response.setHeader("Set-Cookie", "token=" + token + "; Path=/api/; HttpOnly; Secure; SameSite=None; Max-Age=900; Domain=shortlink.io.vn");
+            response.setHeader("Set-Cookie", "token=" + token + "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=900");
             response.sendRedirect(redirectUrl);
         }
 
