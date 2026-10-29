@@ -27,7 +27,7 @@ ENTRYPOINT ["java", \
     "-Dserver.tomcat.threads.max=100", \
     "-Dserver.tomcat.threads.min-spare=10", \
     "-Dserver.tomcat.accept-count=100", \
-    "-Dspring.datasource.hikari.maximum-pool-size=20", \
-    "-Dspring.datasource.hikari.minimum-idle=5", \
+    "-Dspring.datasource.hikari.maximum-pool-size=10", \
+    "-Dspring.datasource.hikari.minimum-idle=1", \
     "--enable-preview", \
     "-jar", "/app/app.jar"]

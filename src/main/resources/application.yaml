@@ -44,6 +44,7 @@ app:
       - "https://shortlink-frontend-eight.vercel.app"
 
 server:
+  address: 0.0.0.0
   port: ${PORT:10082}
   forward-headers-strategy: native
   tomcat:
