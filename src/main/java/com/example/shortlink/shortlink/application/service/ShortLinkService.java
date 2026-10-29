@@ -19,6 +19,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -106,19 +107,29 @@ public class ShortLinkService {
     }
 
 
+    @Transactional
     public String getOriginalUrl(String code) {
+        String originalUrl = null;
         RedissonClient redissonClient = redissonClientProvider.getIfAvailable();
         if (redissonClient != null) {
             RMap<String, String> urlMap = redissonClient.getMap("shortlink.code");
             if (urlMap.containsKey(code)) {
-                return urlMap.get(code);
+                originalUrl = urlMap.get(code);
             }
         }
-        Optional<ShortlinkEntity> optionalShortlinkEntity = shortlinkEntityRepository.findByCode(code);
-        if (optionalShortlinkEntity.isPresent()) {
-            return optionalShortlinkEntity.get().getOriginalUrl();
+        if (originalUrl == null) {
+            Optional<ShortlinkEntity> optionalShortlinkEntity = shortlinkEntityRepository.findByCode(code);
+            if (optionalShortlinkEntity.isEmpty()) {
+                throw new AppException(SHORTENED_CODE_NOT_FOUND);
+            }
+            originalUrl = optionalShortlinkEntity.get().getOriginalUrl();
+            if (redissonClient != null) {
+                redissonClient.getMap("shortlink.code").put(code, originalUrl);
+            }
         }
-        throw new AppException(SHORTENED_CODE_NOT_FOUND);
+
+        shortlinkEntityRepository.incrementClickCount(code);
+        return originalUrl;
     }
 
     public PageResponse<ShortLinkHistoryResponse> getHistory(Pageable pageable) {
