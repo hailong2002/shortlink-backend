@@ -35,7 +35,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             String token = jwtService.generateToken(username);
             String redirectUrl = "https://shortlink-frontend-eight.vercel.app";
 
-            response.setHeader("Set-Cookie", "token=" + token + "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=900");
+            response.setHeader("Set-Cookie", "token=" + token + "; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=259200");
             response.sendRedirect(redirectUrl);
         }
 

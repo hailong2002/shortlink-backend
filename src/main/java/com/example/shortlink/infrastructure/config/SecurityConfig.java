@@ -75,7 +75,7 @@ public class SecurityConfig {
         // Thiết lập các tham số dựa trên Best Practice
         configuration.setAllowedOrigins(corsProperties.getAllowedOrigins());
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept"));
+        configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization")); // Cho phép Frontend đọc header Authorization (nếu cần)
         configuration.setAllowCredentials(true); // Quan trọng: Cho phép gửi Cookie hoặc Header Auth
         configuration.setMaxAge(3600L); // Cache kết quả Preflight trong 1 tiếng để tăng hiệu năng
